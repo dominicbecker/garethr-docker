@@ -26,6 +26,7 @@ define docker::run(
   $privileged = false,
   $detach = false,
   $extra_parameters = undef,
+  $only_once = false,
 ) {
   include docker::params
   $docker_command = $docker::params::docker_command
@@ -50,6 +51,7 @@ define docker::run(
   validate_bool($privileged)
   validate_bool($detach)
   validate_bool($restart_service)
+  validate_bool($only_once)
 
   $ports_array = any2array($ports)
   $expose_array = any2array($expose)
