@@ -18,6 +18,11 @@ pre-start script
         if [ <%= @docker_command %> ps --no-trunc=true|grep -q $cid ]; then
             echo "Container $cid is still running.\n" >&2
             exit 1
+        <%- if @only_once -%>
+        elif <%= @docker_command %> inspect $cid; then
+            echo "Container $cid has already run, and run_once=true was specified.\n" >&2
+            exit 1
+        <%- end -%>
         else
             rm -f $cidfile
         fi
@@ -78,7 +83,6 @@ end script
 
 post-stop script
 if [ -e "/var/run/docker-<%= @sanitised_title %>.cid" ]; then
-  <%= @docker_command %> kill "$(cat /var/run/docker-<%= @sanitised_title %>.cid)" && \
-    rm "/var/run/docker-<%= @sanitised_title %>.cid"
+  <%= @docker_command %> kill "$(cat /var/run/docker-<%= @sanitised_title %>.cid)"
 fi
 end script
