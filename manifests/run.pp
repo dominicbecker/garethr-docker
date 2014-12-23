@@ -76,11 +76,9 @@ define docker::run(
 
   case $::osfamily {
     'Debian': {
-      if $::operatingsystem == 'Ubuntu' {
         $initscript = "/etc/init/docker-${sanitised_title}.conf"
         $init_template = 'docker/etc/init/docker-run.conf.erb'
         $mode = '0644'
-      }
 #      $initscript = "/etc/init.d/docker-${sanitised_title}"
 #      $init_template = 'docker/etc/init.d/docker-run.erb'
       $deprecated_initscript = "/etc/init/docker-${sanitised_title}.conf"
