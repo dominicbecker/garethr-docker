@@ -10,9 +10,11 @@ stop on stopping <%= @service_name %>
 respawn
 respawn limit 5 20
 
+<%- if @only_once -%>
+task
+<%- end -%>
+
 script
-  exec 2>>/outfile # TODO
-  set -x # TODO
   cidfile=/var/run/docker-<%= @sanitised_title %>.cid
   container_exists=0
   cid=
