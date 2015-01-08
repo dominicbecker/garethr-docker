@@ -26,7 +26,11 @@ script
       rm -f $cidfile
     fi
   else
+    <%- if @use_name -%>
+    docker inspect <%= @name %> || container_exists=$?
+    <%- else -%>
     container_exists=1
+    <%- end -%>
   fi
 
   # Not running / never ran
@@ -77,9 +81,9 @@ script
   <%- if not @only_once -%>
   # container exists, start if not running
   else
-      running=$(<%= @docker_command %> inspect --format "{{.State.Running}}" <%= @name %>) # TODO
+      running=$(<%= @docker_command %> inspect --format "{{.State.Running}}" <%= if @use_name then @name else "$cid" end %>) # TODO
       if [ "$running" = "false" ]; then
-          <%= @docker_command %> start -a -i $cid
+          <%= @docker_command %> start -a -i <%= if @use_name then @name else "$cid" end %>
       fi
   <%- end -%>
   fi
