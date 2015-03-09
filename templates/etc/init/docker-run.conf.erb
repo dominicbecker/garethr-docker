@@ -91,7 +91,15 @@ end script
 
 post-stop script
 if [ -e "/var/run/docker-<%= @sanitised_title %>.cid" ]; then
-  <%= @docker_command %> kill "$(cat /var/run/docker-<%= @sanitised_title %>.cid)"
+<%- if @pre_stop_command -%>
+<%-
+# super hack running docker exec in a subshell to ignore exit code
+# since the exit code from docker exec is non-zero
+# Docker Issue (https://github.com/docker/docker/issues/8703)
+-%>
+  echo `docker exec $(cat /var/run/docker-<%= @sanitised_title %>.cid) <%= @pre_stop_command %>` && \
+<%- end -%>
+  <%= @docker_command %> stop "$(cat /var/run/docker-<%= @sanitised_title %>.cid)"
   # container still exists - don't remove cidfile
 fi
 end script

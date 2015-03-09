@@ -27,6 +27,7 @@ define docker::run(
   $detach = false,
   $extra_parameters = undef,
   $only_once = false,
+  $pre_stop_command = false,
 ) {
   include docker::params
   $docker_command = $docker::params::docker_command
@@ -52,6 +53,9 @@ define docker::run(
   validate_bool($detach)
   validate_bool($restart_service)
   validate_bool($only_once)
+  if $pre_stop_command {
+      validate_string($pre_stop_command)
+  }
 
   $ports_array = any2array($ports)
   $expose_array = any2array($expose)
